@@ -65,7 +65,7 @@ return view.extend({
 			);
 		}
 
-		s = m.section(form.TypedSection, "client", _("Client"), _("Client Settings"));
+		s = m.section(form.TypedSection, "client", _("Client Settings"));
 		s.anonymous = true;
 		// add client settings
 		// disabled
