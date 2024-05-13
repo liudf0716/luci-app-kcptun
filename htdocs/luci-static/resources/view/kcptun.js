@@ -3,6 +3,7 @@
 'require ui';
 'require form';
 'require rpc';
+'require uci';
 'require tools.widgets as widgets';
 
 var callServiceList = rpc.declare({
@@ -40,6 +41,10 @@ function renderStatus(isRunning) {
 }
 
 return view.extend({
+	load: function() {
+		// uci load kcptun
+		return uci.load('kcptun');
+	}, 
 	render: function() {
 		var m, s, o;
 
@@ -67,29 +72,51 @@ return view.extend({
 
 		s = m.section(form.TypedSection, "client", _("Client Settings"));
 		s.anonymous = true;
-		// add client settings
-		// disabled
-		o = s.option(form.Flag, 'enabled', _('Enable'), _('Enable this kcptun client instance'));
+		// add two tab sections
+		// Client Settings and Server Settings file sections
+		// Client Settings
+		s.tab("client", _("Client Settings"));
+		s.tab("server", _("Server Settings"));
+
+		o = s.taboption("client", form.Flag, "enabled", _("Enable"), _("Enable this kcptun client instance"));
 		o.rmempty = false;
-		// local_port
-		o = s.option(form.Value, 'local_port', _('Local port'), _('Local port to listen'));
-		o.datatype = 'port';
+
+		o = s.taboption("client", form.Value, "local_port", _("Local Port"), _("Local port to listen"));
+		o.datatype = "port";
 		o.rmempty = false;
-		// server
-		o = s.option(form.Value, 'server', _('Server address'), _('Server address to connect'));
-		o.datatype = 'host';
+
+		o = s.taboption("client", form.Value, "server", _("Server Address"), _("Server address to connect"));
+		o.datatype = "host";
 		o.rmempty = false;
-		// server_port
-		o = s.option(form.Value, 'server_port', _('Server port'), _('Server port-range to connect'));
-		o.datatype = 'portrange';
+
+		o = s.taboption("client", form.Value, "server_port", _("Server Port"), _("Server port-range to connect"));
+		o.datatype = "portrange";
 		o.rmempty = false;
-		// key
-		o = s.option(form.Value, 'key', _('Key'), _('Pre-shared secret between client and server'));
+
+		o = s.taboption("client", form.Value, "key", _("Key"), _("Pre-shared secret between client and server"));
 		o.password = true;
 		o.rmempty = false;
 
-		
+		o = s.taboption("server", form.DummyValue, "_config", _("Server Command"),
+			_("Command to start kcptun server"));
+		o.rawhtml = true;
+		o.cfgvalue = function(section_id) {
+			var server_port = uci.get_first("kcptun", "client", "server_port");
+			var key = uci.get_first("kcptun", "client", "key");
+			var content = "kcptun-server -l :" + server_port + " -t 127.0.0.1:" + 6441 + " -key " + key + " &";
 
+			return "<textarea rows='10' cols='50' readonly>" + content + "</textarea>";
+		}
+
+		o = s.taboption("server", form.Button, "_copy", _("Copy Command"));
+		o.inputtitle = _("Copy the command to clipboard");
+		o.inputstyle = "apply";
+		o.onclick = function(ev) {
+			var textarea = document.querySelector("textarea");
+			textarea.select();
+			document.execCommand("copy");
+			ui.addNotification(null, _("Command copied to clipboard"), "info");
+		}
 		return m.render();
 	}
 });

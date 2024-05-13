@@ -28,3 +28,18 @@ msgstr "对端KCP服务器端口范围"
 
 msgid "Pre-shared secret between client and server"
 msgstr "客户端与服务器之间的预共享密钥"
+
+msgid "Server Settings"
+msgstr "服务器设置"
+
+msgid "Server Command"
+msgstr "服务器命令"
+
+msgid "Command to start kcptun server"
+msgstr "服务器端启动KCP隧道服务器的命令"
+
+msgid "Copy Command"
+msgstr "复制命令"
+
+msgid "Copy the command to clipboard"
+msgstr "复制命令到剪贴板"
