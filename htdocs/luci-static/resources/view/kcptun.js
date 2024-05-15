@@ -5,6 +5,7 @@
 'require rpc';
 'require uci';
 'require tools.widgets as widgets';
+'require tools.github as github';
 
 var callServiceList = rpc.declare({
 	object: 'service',
@@ -49,7 +50,7 @@ return view.extend({
 		var m, s, o;
 
 		m = new form.Map('kcptun', _('kcptun'));
-		m.description = _("kcptun is a Stable & Secure Tunnel Based On KCP with N:M Multiplexing.");
+		m.description = github.luci_desc('kcptun is a Stable & Secure Tunnel Based On KCP with N:M Multiplexing.', 'liudf0716', 'kcptun');
 
 		// add kcptun-client status section and option 
 		s = m.section(form.NamedSection, '_status');
