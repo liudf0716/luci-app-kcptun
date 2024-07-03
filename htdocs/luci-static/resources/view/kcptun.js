@@ -104,7 +104,7 @@ return view.extend({
 		o.cfgvalue = function(section_id) {
 			var server_port = uci.get_first("kcptun", "client", "server_port");
 			var key = uci.get_first("kcptun", "client", "key");
-			var content = "kcptun-server -l :" + server_port + " -t 127.0.0.1:" + 6441 + " -key " + key + " &";
+			var content = "kcptun-server -l :" + server_port + " -t 127.0.0.1:" + 6441 + " --key \"" + key + "\" &";
 
 			return "<textarea rows='10' cols='50' readonly>" + content + "</textarea>";
 		}
